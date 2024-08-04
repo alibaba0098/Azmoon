@@ -30,4 +30,10 @@ class UsersTest extends TestCase
             ]
         ]);
     }
+
+    public function test_it_must_throw_a_exception_if_we_dont_send_parameters()
+    {
+        $response = $this->call('POST', 'api/v1/users', []);
+        $response->assertStatus(302);        
+    }
 }

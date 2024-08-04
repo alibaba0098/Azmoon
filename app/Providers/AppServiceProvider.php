@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\Eloquent\EloquentUserRepository;
+use App\Repositories\Json\JsonUserRepository;
 use Illuminate\Support\ServiceProvider;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -20,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->bind(UserRepositoryInterface::class, EloquentUserRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, JsonUserRepository::class);
     }
     
 }

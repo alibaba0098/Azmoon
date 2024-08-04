@@ -2,43 +2,43 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Controllers\API\Contracts\APIController;
 use App\Http\Controllers\Controller;
-use App\Repositories\Contracts\RepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class UsersController extends Controller
+class UsersController extends APIController
 {
+
     public function __construct(private UserRepositoryInterface $userRepository)
     {
         //
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $this->userRepository->create([
-            'success' => true,
-            'message' => 'کاربر با موفقیت ایجاد شد',
-            'data' => [
-                'full_name' => 'erfan',
-                'email' => 'erfan@gmail.com',
-                'mobile' => '0901',
-                'password' => '1234'
-            ],
+        $request->validate([
+            'full_name' => 'required|string|min:3|max:255',
+            'email' => 'required|email',
+            'mobile' => 'required|string',
+            'password' => 'required|string'
         ]);
 
-        return response()->json(
+        $this->userRepository->create(
             [
-                'success' => true,
-                'message' => 'کاربر با موفقیت ایجاد شد',
-                'data' => [
-                    'full_name' => 'erfan',
-                    'email' => 'erfan@gmail.com',
-                    'mobile' => '0901',
-                    'password' => '1234'
-                ],
-            ],
-            201
+                'full_name' => $request->full_name,
+                'email' => $request->email,
+                'mobile' => $request->mobile,
+                'password' => Hash::make($request->password),
+            ]
         );
+
+        return $this->respondCreated('کاربر با موفقیت ایجاد شد', [
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+            'password' => $request->password,
+        ]);
     }
 }
