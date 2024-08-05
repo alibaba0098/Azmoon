@@ -4,6 +4,8 @@ namespace App\Repositories\Json;
 
 use App\Repositories\Contracts\RepositoryInterface;
 
+use function PHPUnit\Framework\fileExists;
+
 class JsonBaseRepository implements RepositoryInterface
 {
     protected $model;
@@ -12,22 +14,36 @@ class JsonBaseRepository implements RepositoryInterface
     {
         if (file_exists('users.json')) {
             $users = json_decode(file_get_contents('users.json'), true);
-            $data['id'] = rand(1,1000);
+            $data['id'] = rand(1, 1000);
             array_push($users, $data);
             file_put_contents('users.json', json_encode($users));
-        }else{
+        } else {
             $users = [];
             $data['id'] = rand(1, 1000);
             array_push($users, $data);
             file_put_contents('users.json', json_encode($users));
         }
-        // file_put_contents('users.json', json_encode($data));
-        // return $this->model::create($data);
     }
 
     public function update(int $id, array $data)
     {
-        return $this->model::where('id', $id)->update($data);
+        if (file_exists('users.json')) {
+            $users = json_decode(file_get_contents('users.json'), true);
+            foreach ($users as $key => $user) {
+                if ($user['id'] == $id) {
+                    $user['full_name'] = $data['full_name'] ?? $user['full_name'];
+                    $user['email'] = $data['email'] ?? $user['email'];
+                    $user['mobile'] = $data['mobile'] ?? $user['mobile'];
+
+                    unset($users[$key]);
+                    array_push($users, $user);
+
+                    unlink('users.json');
+                    file_put_contents('users.json', json_encode($users));
+                    break;
+                }
+            }
+        }
     }
 
     public function all(array $where)

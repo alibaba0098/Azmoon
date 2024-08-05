@@ -10,9 +10,16 @@ Route::prefix('api/v1')->group(function () {
             '',
             [UsersController::class, 'store']
         );
+
+        Route::put(
+            '',
+            [UsersController::class, 'updateInfo']
+        );
+
+
         Route::get(
             '',
-            [UsersController::class, 'store']
+            [UsersController::class, 'updateInfo']
         );
     });
 });
