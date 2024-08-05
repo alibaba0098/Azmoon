@@ -34,6 +34,7 @@ class JsonBaseRepository implements RepositoryInterface
                     $user['full_name'] = $data['full_name'] ?? $user['full_name'];
                     $user['email'] = $data['email'] ?? $user['email'];
                     $user['mobile'] = $data['mobile'] ?? $user['mobile'];
+                    $user['password'] = $data['password'] ?? $user['password'];
 
                     unset($users[$key]);
                     array_push($users, $user);

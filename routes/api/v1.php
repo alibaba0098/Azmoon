@@ -16,6 +16,11 @@ Route::prefix('api/v1')->group(function () {
             [UsersController::class, 'updateInfo']
         );
 
+        Route::put(
+            'change-password',
+            [UsersController::class, 'updatePassword']
+        );
+
 
         Route::get(
             '',

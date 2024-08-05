@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UsersController extends APIController
 {
-
     public function __construct(private UserRepositoryInterface $userRepository)
     {
         //
@@ -60,6 +59,28 @@ class UsersController extends APIController
         );
 
         return $this->respondSuccess('کاربر با موفقیت بروزرسانی شد', [
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'password' => 'required|min:6|required_with:password_repeat|same:password_repeat',
+            'password_repeat' => 'min:6',
+        ]);
+
+        $this->userRepository->update(
+            $request->id,
+            [
+                'password' => Hash::make($request->password),
+            ]
+        );
+
+        return $this->respondSuccess('رمز کاربر با موفقیت بروزرسانی شد', [
             'full_name' => $request->full_name,
             'email' => $request->email,
             'mobile' => $request->mobile,

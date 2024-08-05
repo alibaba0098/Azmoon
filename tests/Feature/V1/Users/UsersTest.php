@@ -4,6 +4,7 @@ namespace Tests\Feature\V1\Users;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UsersTest extends TestCase
@@ -62,5 +63,26 @@ class UsersTest extends TestCase
     {
         $response = $this->call('PUT', 'api/v1/users', []);
         $response->assertStatus(302);
+    }
+
+    public function test_should_update_user_password()
+    {
+        $response = $this->call('PUT', 'api/v1/users/change-password', [
+            'id' => '717',
+            'password' => 'pass1234',
+            'password_repeat' => 'pass1234',
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'success',
+            'message',
+            'data' => [
+                'full_name',
+                'email',
+                'mobile',
+            ]
+        ]);
     }
 }
