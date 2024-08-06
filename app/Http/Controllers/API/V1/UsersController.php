@@ -15,6 +15,19 @@ class UsersController extends APIController
         //
     }
 
+    public function index(Request $request)
+    {
+        $request->validate([
+            'search' => 'nullable|string',
+            'page' => 'required|numeric',
+            'pagesize' => 'nullable|numeric',
+        ]);
+
+        $users = $this->userRepository->paginate($request->search, $request->page, $request->pagesize ?? 20);
+
+        return $this->respondCreated('لیست کاربران با موفقیت دریافت شد', $users);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -50,7 +63,8 @@ class UsersController extends APIController
             'mobile' => 'required|string',
         ]);
 
-        $this->userRepository->update($request->id,
+        $this->userRepository->update(
+            $request->id,
             [
                 'full_name' => $request->full_name,
                 'email' => $request->email,

@@ -21,6 +21,10 @@ Route::prefix('api/v1')->group(function () {
             '',
             [UsersController::class, 'delete']
         );
+        Route::get(
+            '',
+            [UsersController::class, 'index']
+        );
 
 
     });

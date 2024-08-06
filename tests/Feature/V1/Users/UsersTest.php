@@ -112,4 +112,47 @@ class UsersTest extends TestCase
         $response = $this->call('DELETE', 'api/v1/users', []);
         $response->assertStatus(302);
     }
+
+    public function test_should_get_users()
+    {
+        $pageSize = 3;
+        $response = $this->call('GET', 'api/v1/users', [
+            'page' => 1,
+            'pagesize' => $pageSize,
+
+        ]);
+
+        $response->assertStatus(201);
+        
+        $data = json_decode($response->getContent(), true);
+        $this->assertEquals($pageSize, count($data['data']));
+        $response->assertJsonStructure([
+            'success',
+            'message',
+            'data',
+        ]);
+        
+    }
+
+    public function test_should_get_filtered_user()
+    {
+        $pageSize = 3;
+        $userEmail = 'sara@gmail.com';
+        $response = $this->call('GET', 'api/v1/users', [
+            'search' => $userEmail,
+            'page' => 1,
+            'pagesize' => $pageSize,
+
+        ]);
+        $data = json_decode($response->getContent(), true);
+
+        $response->assertStatus(201);
+
+        $this->assertEquals($data['data']['email'], $userEmail);
+        $response->assertJsonStructure([
+            'success',
+            'message',
+            'data',
+        ]);
+    }
 }
