@@ -49,24 +49,33 @@ class JsonBaseRepository implements RepositoryInterface
 
     public function all(array $where)
     {
-        $query = $this->model::query();
-        foreach ($where as $key => $value) {
-            $query->where($key, $value);
-        }
-        return $query->get();
+        //
     }
 
-    public function delete(array $where)
+    public function delete(int $id)
     {
-        $query = $this->model::query();
-        foreach ($where as $key => $value) {
-            $query->where($key, $value);
+        if (file_exists('users.json')) {
+            $users = json_decode(file_get_contents('users.json'), true);
+            foreach ($users as $key => $user) {
+                if ($user['id'] == $id) {
+                    unset($users[$key]);
+                    unlink('users.json');
+                    file_put_contents('users.json', json_encode($users));
+                    break;
+                }
+            }
         }
-        return $query->delete();
     }
+
+
 
     public function find(int $id)
     {
         return $this->model::find($id);
+    }
+
+    public function deleteBy(array $where)
+    {
+        //   
     }
 }
